@@ -1,0 +1,14 @@
+api_platform:
+  formats:
+    json: ['application/json']
+
+  swagger:
+    api_keys:
+      JWT:
+        name: Authorization
+        type: header
+
+  title: 'Josette API'
+  version: '1.0.0'
+  description: Des petites histoires, sans prétention !
+  show_webby: false

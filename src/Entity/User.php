@@ -7,6 +7,7 @@ use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\Post;
 use App\Controller\CreateUserController;
+use App\Controller\LoginUserController;
 use App\Repository\UserRepository;
 use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -30,7 +31,12 @@ use Symfony\Component\Serializer\Annotation\Groups;
             uriTemplate: "/signin",
             controller: CreateUserController::class,
             denormalizationContext: ['groups' => ['user:write']]
-        )
+        ),
+        // new Get(
+        //     uriTemplate: "/login",
+        //     controller: LoginUserController::class,
+        //     security: "object.getUser() == user"
+        // )
     ]
 )]
 class User implements UserInterface, PasswordAuthenticatedUserInterface

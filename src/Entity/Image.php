@@ -37,7 +37,7 @@ class Image
     private ?string $imagePath = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    #[Groups(['user:read', 'story:read'])]
+    #[Groups(['user:read', 'story:read', 'theme:read'])]
     private ?string $thumbnailPath = null;
 
     private $file;

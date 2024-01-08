@@ -18,41 +18,49 @@ class AppFixtures extends Fixture
 
     public function load(ObjectManager $manager): void
     {
-        
+        // php bin/console doctrine:fixtures:load
+        $faker = \Faker\Factory::create('fr_FR');
+
         // Création d'un user admin
         $userAdmin = new User();
         $userAdmin->setEmail("sylvain@email.com");
         $userAdmin->setName('Sylvain');
         $userAdmin->setRoles(["ROLE_ADMIN"]);
+        $userAdmin->setQuote($faker->realTextBetween($minNbChars = 50, $maxNbChars = 200, $indexSize = 2));
+        $userAdmin->setDescription($faker->realTextBetween($minNbChars = 150, $maxNbChars = 400, $indexSize = 2));
         $userAdmin->setPassword($this->passwordHasher->hashPassword($userAdmin, "aaaaaa"));
         $manager->persist($userAdmin);
 
-        for ($i = 1; $i <= 3; $i++) {
+        for ($i = 1; $i <= 2; $i++) {
             $story = new Story();
-            $story->setTitle("Story $i");
-            $story->setSynopsis("Synopsis $i");
-            $story->setContent("Contenu $i");
+            $story->setTitle($faker->catchPhrase());
+            $story->setSynopsis($faker->realTextBetween($minNbChars = 50, $maxNbChars = 200, $indexSize = 2));
+            $story->setContent($faker->realTextBetween($minNbChars = 300, $maxNbChars = 800, $indexSize = 2));
             $story->setUser($userAdmin);
             $story->setCreatedAt(new \DateTimeImmutable());
             $manager->persist($story);
         }
 
-        // Création d'un user
-        $user = new User();
-        $user->setEmail("abde@email.com");
-        $user->setName('Abdé');
-        $user->setRoles(["ROLE_USER"]);
-        $user->setPassword($this->passwordHasher->hashPassword($user, "aaaaaa"));
-        $manager->persist($user);
+        // Creation de users avec faker
+        for ($i = 1; $i <= 4; $i++) {
+            $user = new User();
+            $user->setEmail($faker->email());
+            $user->setName($faker->name());
+            $user->setRoles(["ROLE_USER"]);
+            $user->setQuote($faker->realTextBetween($minNbChars = 50, $maxNbChars = 200, $indexSize = 2));
+            $user->setDescription($faker->realTextBetween($minNbChars = 150, $maxNbChars = 400, $indexSize = 2));
+            $user->setPassword($this->passwordHasher->hashPassword($user, "aaaaaa"));
+            $manager->persist($user);
 
-        for ($i = 1; $i <= 3; $i++) {
-            $story = new Story();
-            $story->setTitle("Story $i");
-            $story->setSynopsis("Synopsis $i");
-            $story->setContent("Contenu $i");
-            $story->setUser($user);
-            $story->setCreatedAt(new \DateTimeImmutable());
-            $manager->persist($story);
+            for ($j = 1; $j <= rand(2, 9); $j++) {
+                $story = new Story();
+                $story->setTitle($faker->catchPhrase());
+                $story->setSynopsis($faker->realTextBetween($minNbChars = 50, $maxNbChars = 200, $indexSize = 2));
+                $story->setContent($faker->realTextBetween($minNbChars = 300, $maxNbChars = 800, $indexSize = 2));
+                $story->setUser($user);
+                $story->setCreatedAt(new \DateTimeImmutable());
+                $manager->persist($story);
+            }
         }
 
         $manager->flush();

@@ -10,6 +10,8 @@ use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
 use App\Repository\StoryRepository;
 use DateTimeImmutable;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
@@ -19,11 +21,11 @@ use Symfony\Component\Serializer\Annotation\Groups;
     operations: [
         new Get(
             normalizationContext: ['groups' => ['story:read']],
-            security: "is_granted('ROLE_USER')"
+            // security: "is_granted('ROLE_USER')"
         ),
         new GetCollection(
             normalizationContext: ['groups' => ['story:read']],
-            security: "is_granted('ROLE_USER')"
+            // security: "is_granted('ROLE_USER')"
         ),
         new Patch(
             security: "is_granted('ROLE_ADMIN') or object.getUser() == user",
@@ -47,42 +49,47 @@ class Story
     private ?int $id = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    #[Groups(['story:read', 'story:write', 'user:read'])]
+    #[Groups(['story:read', 'story:write', 'user:read', 'theme:read'])]
     private ?string $title = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
-    #[Groups(['story:read', 'story:write', 'user:read'])]
+    #[Groups(['story:read', 'story:write', 'user:read', 'theme:read'])]
     private ?string $synopsis = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
-    #[Groups(['story:read', 'story:write', 'user:read'])]
+    #[Groups(['story:read', 'story:write', 'user:read', 'theme:read'])]
     private ?string $content = null;
 
     #[ORM\Column(nullable: true)]
-    #[Groups(['story:read', 'user:read'])]
+    #[Groups(['story:read', 'user:read', 'theme:read'])]
     private ?\DateTimeImmutable $createdAt = null;
 
     #[ORM\Column(nullable: true)]
-    #[Groups(['story:read', 'user:read'])]
+    #[Groups(['story:read', 'user:read', 'theme:read'])]
     private ?\DateTimeImmutable $updatedAt = null;
 
     #[ORM\Column(nullable: true)]
-    #[Groups(['story:read', 'user:read'])]
+    #[Groups(['story:read', 'user:read', 'theme:read'])]
     private ?bool $isModerated = null;
 
     #[ORM\ManyToOne(inversedBy: 'stories')]
     #[ORM\JoinColumn(nullable: false)]
-    #[Groups(['story:read'])]
+    #[Groups(['story:read', 'theme:read'])]
     private ?User $user = null;
 
     #[ORM\OneToOne(mappedBy: 'story', cascade: ['persist', 'remove'])]
-    #[Groups(['story:read'])]
+    #[Groups(['story:read', 'user:read', 'theme:read'])]
     private ?Image $image = null;
+
+    #[ORM\ManyToMany(targetEntity: Theme::class, mappedBy: 'stories')]
+    #[Groups(['story:read', 'user:read'])]
+    private Collection $themes;
 
     public function __construct()
     {
         $this->createdAt = new DateTimeImmutable();
         $this->isModerated = false;
+        $this->themes = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -192,6 +199,33 @@ class Story
         }
 
         $this->image = $image;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Theme>
+     */
+    public function getThemes(): Collection
+    {
+        return $this->themes;
+    }
+
+    public function addTheme(Theme $theme): self
+    {
+        if (!$this->themes->contains($theme)) {
+            $this->themes->add($theme);
+            $theme->addStory($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTheme(Theme $theme): self
+    {
+        if ($this->themes->removeElement($theme)) {
+            $theme->removeStory($this);
+        }
 
         return $this;
     }

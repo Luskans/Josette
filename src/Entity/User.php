@@ -28,7 +28,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
             normalizationContext: ['groups' => ['user:read']]
         ),
         new Post(
-            uriTemplate: "/signin",
+            uriTemplate: "/signup",
             controller: CreateUserController::class,
             denormalizationContext: ['groups' => ['user:write']]
         ),
@@ -44,7 +44,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['user:read'])]
+    #[Groups(['user:read', 'story:read'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 180, unique: true)]
@@ -60,10 +60,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     #[Groups(['user:write'])]
     private ?string $password = null;
-
+    
     #[ORM\Column(length: 255, nullable: true)]
-    #[Groups(['user:read', 'user:write', 'story:read'])]
+    #[Groups(['user:read', 'user:write', 'story:read', 'theme:read'])]
     private ?string $name = null;
+    
+    #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(['user:read'])]
+    private ?string $quote = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     #[Groups(['user:read'])]
@@ -82,7 +86,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?\DateTimeImmutable $deletedAt = null;
 
     #[ORM\Column(nullable: true)]
-    #[Groups(['user:read', 'story:read'])]
+    #[Groups(['user:read', 'story:read', 'theme:read'])]
     private ?bool $isDeleted = null;
 
     #[ORM\Column(nullable: true)]
@@ -96,6 +100,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToOne(mappedBy: 'user', cascade: ['persist', 'remove'])]
     #[Groups(['user:read'])]
     private ?Image $image = null;
+
 
     public function __construct()
     {
@@ -182,6 +187,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setName(?string $name): self
     {
         $this->name = $name;
+
+        return $this;
+    }
+    
+    public function getQuote(): ?string
+    {
+        return $this->quote;
+    }
+
+    public function setQuote(?string $quote): self
+    {
+        $this->quote = $quote;
 
         return $this;
     }
@@ -309,4 +326,5 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
         return $this;
     }
+
 }

@@ -37,6 +37,7 @@ security:
         - { path: /api/signup, roles: PUBLIC_ACCESS }
         - { path: /api/stories, roles: PUBLIC_ACCESS }
         - { path: /api/users, roles: PUBLIC_ACCESS }
+        # - { path: /api/themes, roles: PUBLIC_ACCESS }
         # - { path: /api/stories/{id}, roles: PUBLIC_ACCESS }
         - { path: ^/api, roles: IS_AUTHENTICATED_FULLY }
 

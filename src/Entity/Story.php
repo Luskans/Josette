@@ -8,6 +8,7 @@ use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
+use App\Controller\CreateStoryController;
 use App\Repository\StoryRepository;
 use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -34,9 +35,10 @@ use Symfony\Component\Serializer\Annotation\Groups;
             security: "is_granted('ROLE_ADMIN') or object.getUser() == user",
         ),
         new Post(
+            controller: CreateStoryController::class,
             denormalizationContext: ['groups' => ['story:write']],
             normalizationContext: ['groups' => ['story:read']],
-            security: "is_granted('ROLE_USER')"
+            // security: "is_granted('ROLE_USER')"
         )
     ]
 )]

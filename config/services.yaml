@@ -31,3 +31,12 @@ services:
                 event: 'lexik_jwt_authentication.on_jwt_created', 
                 method: 'onJWTCreated' 
             }
+
+    # V2 event listener pour renvoyer le token JWT en cookie http
+    # App\Events\AuthenticationSuccessListener:
+    #     tags:
+    #         - { 
+    #             name: 'kernel.event_listener', 
+    #             event: 'lexik_jwt_authentication.on_authentication_success', 
+    #             method: 'onAuthenticationSuccess'
+    #         }

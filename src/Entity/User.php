@@ -62,7 +62,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $password = null;
     
     #[ORM\Column(length: 255, nullable: true)]
-    #[Groups(['user:read', 'user:write', 'story:read', 'theme:read'])]
+    #[Groups(['user:read', 'user:write', 'story:read'])]
     private ?string $name = null;
     
     #[ORM\Column(length: 255, nullable: true)]
@@ -86,7 +86,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?\DateTimeImmutable $deletedAt = null;
 
     #[ORM\Column(nullable: true)]
-    #[Groups(['user:read', 'story:read', 'theme:read'])]
+    #[Groups(['user:read', 'story:read'])]
     private ?bool $isDeleted = null;
 
     #[ORM\Column(nullable: true)]

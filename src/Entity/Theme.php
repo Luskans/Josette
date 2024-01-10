@@ -23,6 +23,10 @@ use Symfony\Component\Serializer\Annotation\Groups;
         new GetCollection(
             normalizationContext: ['groups' => ['theme:read']],
         ),
+        // new GetCollection(
+        //     normalizationContext: ['groups' => ['theme:read:names']],
+        //     uriTemplate: '/themes/names'
+        // ),
     ]
 )]
 class Theme
@@ -30,6 +34,7 @@ class Theme
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['theme:read'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
@@ -37,7 +42,6 @@ class Theme
     private ?string $name = null;
 
     #[ORM\ManyToMany(targetEntity: Story::class, inversedBy: 'themes')]
-    #[Groups(['theme:read'])]
     private Collection $stories;
 
     public function __construct()

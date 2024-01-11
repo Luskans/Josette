@@ -87,11 +87,33 @@ class Story
     #[Groups(['story:read', 'user:read'])]
     private Collection $themes;
 
+    #[ORM\OneToMany(mappedBy: 'story', targetEntity: Comment::class, orphanRemoval: true)]
+    #[Groups(['story:read', 'user:read'])]
+    private Collection $comments;
+
+    #[ORM\Column(nullable: true)]
+    #[Groups(['story:read', 'user:read'])]
+    private ?int $viewCount = null;
+
+    #[ORM\OneToMany(mappedBy: 'story', targetEntity: Like::class)]
+    #[Groups(['story:read', 'user:read'])]
+    private Collection $likes;
+
+    #[ORM\OneToMany(mappedBy: 'story', targetEntity: Favorite::class)]
+    private Collection $favorites;
+
+    #[ORM\OneToMany(mappedBy: 'story', targetEntity: Notification::class)]
+    private Collection $notifications;
+
     public function __construct()
     {
         $this->createdAt = new DateTimeImmutable();
         $this->isModerated = false;
         $this->themes = new ArrayCollection();
+        $this->comments = new ArrayCollection();
+        $this->likes = new ArrayCollection();
+        $this->favorites = new ArrayCollection();
+        $this->notifications = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -227,6 +249,138 @@ class Story
     {
         if ($this->themes->removeElement($theme)) {
             $theme->removeStory($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Comment>
+     */
+    public function getComments(): Collection
+    {
+        return $this->comments;
+    }
+
+    public function addComment(Comment $comment): self
+    {
+        if (!$this->comments->contains($comment)) {
+            $this->comments->add($comment);
+            $comment->setStory($this);
+        }
+
+        return $this;
+    }
+
+    public function removeComment(Comment $comment): self
+    {
+        if ($this->comments->removeElement($comment)) {
+            // set the owning side to null (unless already changed)
+            if ($comment->getStory() === $this) {
+                $comment->setStory(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getViewCount(): ?int
+    {
+        return $this->viewCount;
+    }
+
+    public function setViewCount(?int $viewCount): self
+    {
+        $this->viewCount = $viewCount;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Like>
+     */
+    public function getLikes(): Collection
+    {
+        return $this->likes;
+    }
+
+    public function addLike(Like $like): self
+    {
+        if (!$this->likes->contains($like)) {
+            $this->likes->add($like);
+            $like->setStory($this);
+        }
+
+        return $this;
+    }
+
+    public function removeLike(Like $like): self
+    {
+        if ($this->likes->removeElement($like)) {
+            // set the owning side to null (unless already changed)
+            if ($like->getStory() === $this) {
+                $like->setStory(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Favorite>
+     */
+    public function getFavorites(): Collection
+    {
+        return $this->favorites;
+    }
+
+    public function addFavorite(Favorite $favorite): self
+    {
+        if (!$this->favorites->contains($favorite)) {
+            $this->favorites->add($favorite);
+            $favorite->setStory($this);
+        }
+
+        return $this;
+    }
+
+    public function removeFavorite(Favorite $favorite): self
+    {
+        if ($this->favorites->removeElement($favorite)) {
+            // set the owning side to null (unless already changed)
+            if ($favorite->getStory() === $this) {
+                $favorite->setStory(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Notification>
+     */
+    public function getNotifications(): Collection
+    {
+        return $this->notifications;
+    }
+
+    public function addNotification(Notification $notification): self
+    {
+        if (!$this->notifications->contains($notification)) {
+            $this->notifications->add($notification);
+            $notification->setStory($this);
+        }
+
+        return $this;
+    }
+
+    public function removeNotification(Notification $notification): self
+    {
+        if ($this->notifications->removeElement($notification)) {
+            // set the owning side to null (unless already changed)
+            if ($notification->getStory() === $this) {
+                $notification->setStory(null);
+            }
         }
 
         return $this;

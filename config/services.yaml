@@ -23,7 +23,7 @@ services:
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
 
-    # event listener pour rajouter des infos au token JWT
+    # # event listener pour rajouter des infos au token JWT
     App\Events\JWTCreatedListener:
         tags:
             - { 
@@ -32,7 +32,7 @@ services:
                 method: 'onJWTCreated' 
             }
 
-    # V2 event listener pour renvoyer le token JWT en cookie http
+    # V2 event listener pour renvoyer le token JWT en cookie http (bug cookie non stocké)
     # App\Events\AuthenticationSuccessListener:
     #     tags:
     #         - { 

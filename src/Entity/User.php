@@ -7,7 +7,7 @@ use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\Post;
 use App\Controller\CreateUserController;
-use App\Controller\LoginUserController;
+use App\Controller\ConnectedUserController;
 use App\Repository\UserRepository;
 use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -24,6 +24,15 @@ use Symfony\Component\Serializer\Annotation\Groups;
         new Get(
             normalizationContext: ['groups' => ['user:read']]
         ),
+        new Get(
+            uriTemplate: "/connected",
+            controller: ConnectedUserController::class,
+            read: false,
+            output: false,
+            openapiContext: [
+                'summary' => 'Gets the currently logged in user'
+            ]
+        ),
         new GetCollection(
             normalizationContext: ['groups' => ['user:read']]
         ),
@@ -32,11 +41,6 @@ use Symfony\Component\Serializer\Annotation\Groups;
             controller: CreateUserController::class,
             denormalizationContext: ['groups' => ['user:write']]
         ),
-        // new Get(
-        //     uriTemplate: "/login",
-        //     controller: LoginUserController::class,
-        //     security: "object.getUser() == user"
-        // )
     ]
 )]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
@@ -101,12 +105,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Groups(['user:read'])]
     private ?Image $image = null;
 
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: Comment::class, orphanRemoval: true)]
+    private Collection $comments;
+
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: Like::class)]
+    private Collection $likes;
+
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: Favorite::class)]
+    private Collection $favorites;
+
+    #[ORM\OneToMany(mappedBy: 'follower', targetEntity: Follow::class)]
+    private Collection $imFollowing;
+
+    #[ORM\OneToMany(mappedBy: 'followed', targetEntity: Follow::class)]
+    private Collection $whoFollowMe;
+
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: Notification::class)]
+    private Collection $notifications;
 
     public function __construct()
     {
         $this->stories = new ArrayCollection();
         $this->createdAt = new DateTimeImmutable();
         $this->isBanned = false;
+        $this->comments = new ArrayCollection();
+        $this->likes = new ArrayCollection();
+        $this->favorites = new ArrayCollection();
+        $this->imFollowing = new ArrayCollection();
+        $this->whoFollowMe = new ArrayCollection();
+        $this->story = new ArrayCollection();
+        $this->notifications = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -323,6 +351,186 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         }
 
         $this->image = $image;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Comment>
+     */
+    public function getComments(): Collection
+    {
+        return $this->comments;
+    }
+
+    public function addComment(Comment $comment): self
+    {
+        if (!$this->comments->contains($comment)) {
+            $this->comments->add($comment);
+            $comment->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeComment(Comment $comment): self
+    {
+        if ($this->comments->removeElement($comment)) {
+            // set the owning side to null (unless already changed)
+            if ($comment->getUser() === $this) {
+                $comment->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Like>
+     */
+    public function getLikes(): Collection
+    {
+        return $this->likes;
+    }
+
+    public function addLike(Like $like): self
+    {
+        if (!$this->likes->contains($like)) {
+            $this->likes->add($like);
+            $like->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeLike(Like $like): self
+    {
+        if ($this->likes->removeElement($like)) {
+            // set the owning side to null (unless already changed)
+            if ($like->getUser() === $this) {
+                $like->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Favorite>
+     */
+    public function getFavorites(): Collection
+    {
+        return $this->favorites;
+    }
+
+    public function addFavorite(Favorite $favorite): self
+    {
+        if (!$this->favorites->contains($favorite)) {
+            $this->favorites->add($favorite);
+            $favorite->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeFavorite(Favorite $favorite): self
+    {
+        if ($this->favorites->removeElement($favorite)) {
+            // set the owning side to null (unless already changed)
+            if ($favorite->getUser() === $this) {
+                $favorite->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Follow>
+     */
+    public function getImFollowing(): Collection
+    {
+        return $this->imFollowing;
+    }
+
+    public function addImFollowing(Follow $imFollowing): self
+    {
+        if (!$this->imFollowing->contains($imFollowing)) {
+            $this->imFollowing->add($imFollowing);
+            $imFollowing->setFollower($this);
+        }
+
+        return $this;
+    }
+
+    public function removeImFollowing(Follow $imFollowing): self
+    {
+        if ($this->imFollowing->removeElement($imFollowing)) {
+            // set the owning side to null (unless already changed)
+            if ($imFollowing->getFollower() === $this) {
+                $imFollowing->setFollower(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Follow>
+     */
+    public function getWhoFollowMe(): Collection
+    {
+        return $this->whoFollowMe;
+    }
+
+    public function addWhoFollowMe(Follow $whoFollowMe): self
+    {
+        if (!$this->whoFollowMe->contains($whoFollowMe)) {
+            $this->whoFollowMe->add($whoFollowMe);
+            $whoFollowMe->setFollowed($this);
+        }
+
+        return $this;
+    }
+
+    public function removeWhoFollowMe(Follow $whoFollowMe): self
+    {
+        if ($this->whoFollowMe->removeElement($whoFollowMe)) {
+            // set the owning side to null (unless already changed)
+            if ($whoFollowMe->getFollowed() === $this) {
+                $whoFollowMe->setFollowed(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Notification>
+     */
+    public function getNotifications(): Collection
+    {
+        return $this->notifications;
+    }
+
+    public function addNotification(Notification $notification): self
+    {
+        if (!$this->notifications->contains($notification)) {
+            $this->notifications->add($notification);
+            $notification->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeNotification(Notification $notification): self
+    {
+        if ($this->notifications->removeElement($notification)) {
+            // set the owning side to null (unless already changed)
+            if ($notification->getUser() === $this) {
+                $notification->setUser(null);
+            }
+        }
 
         return $this;
     }

@@ -2,6 +2,7 @@
 
 namespace App\DataFixtures;
 
+use App\Entity\Comment;
 use App\Entity\Story;
 use App\Entity\User;
 use Doctrine\Bundle\FixturesBundle\Fixture;
@@ -60,6 +61,18 @@ class AppFixtures extends Fixture
                 $story->setUser($user);
                 $story->setCreatedAt(new \DateTimeImmutable());
                 $manager->persist($story);
+
+                for ($k = 1; $k <= rand(1, 5); $k++) {
+                    $commenter = new User();
+                    $commenter->setName($faker->name());
+                    $comment = new Comment();
+                    $comment->setContent($faker->realTextBetween($minNbChars = 160, $maxNbChars = 128, $indexSize = 2));
+                    $comment->setStory($story);
+                    $comment->setUser($commenter);
+                    $comment->setCreatedAt(new \DateTimeImmutable());
+                    $comment->setIsModerated(false);
+                    $manager->persist($comment);
+                }
             }
         }
 

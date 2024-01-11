@@ -73,9 +73,9 @@ class JWTCreatedListener
     {
         $payload = $event->getData();
         $user = $event->getUser();
-        if (!$user instanceof UserInterface) {
-            throw new \Exception("User not found", 500);
-        }
+        // if (!$user instanceof UserInterface) {
+        //     throw new \Exception("User not found", 500);
+        // }
 
         $payload['id'] = $user->getId();
         $payload['name'] = $user->getName();

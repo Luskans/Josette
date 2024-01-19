@@ -14,15 +14,15 @@ use Symfony\Component\Serializer\Annotation\Groups;
 #[ORM\Entity(repositoryClass: ImageRepository::class)]
 #[ApiResource(
     operations: [
-        new Put(
-            security: "object.getUser() == user",
-        ),
-        new Delete(
-            security: "is_granted('ROLE_ADMIN') or object.getUser() == user",
-        ),
-        new Post(
-            security: "is_granted('ROLE_USER')"
-        )
+        // new Put(
+        //     security: "object.getUser() == user",
+        // ),
+        // new Delete(
+        //     security: "is_granted('ROLE_ADMIN') or object.getUser() == user",
+        // ),
+        // new Post(
+        //     security: "is_granted('ROLE_USER')"
+        // )
     ]
 )]
 class Image
@@ -33,17 +33,17 @@ class Image
     private ?int $id = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    #[Groups(['user:read', 'story:read'])]
+    #[Groups(['story:read', 'user:read'])]
     private ?string $imagePath = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    #[Groups(['user:read', 'story:read', 'theme:read'])]
+    // #[Groups([])]
     private ?string $thumbnailPath = null;
 
     private $file;
 
     #[ORM\Column(length: 255, nullable: true)]
-    #[Groups(['user:read', 'story:read'])]
+    #[Groups(['story:read', 'user:read'])]
     private ?string $name = null;
 
     #[ORM\OneToOne(inversedBy: 'image', cascade: ['persist', 'remove'])]

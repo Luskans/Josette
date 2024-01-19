@@ -17,13 +17,11 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Annotation\MaxDepth;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ApiResource(
     operations: [
-        new Get(
-            normalizationContext: ['groups' => ['user:read']]
-        ),
         new Get(
             uriTemplate: "/connected",
             controller: ConnectedUserController::class,
@@ -31,10 +29,14 @@ use Symfony\Component\Serializer\Annotation\Groups;
             output: false,
             openapiContext: [
                 'summary' => 'Gets the currently logged in user'
-            ]
+            ],
+            normalizationContext: ['groups' => ['user:read:connected']]
+        ),
+        new Get(
+            normalizationContext: ['groups' => ['user:read', 'user:read:item']]
         ),
         new GetCollection(
-            normalizationContext: ['groups' => ['user:read']]
+            normalizationContext: ['groups' => ['user:read', 'user:read:collection']]
         ),
         new Post(
             uriTemplate: "/signup",
@@ -52,10 +54,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?int $id = null;
 
     #[ORM\Column(length: 180, unique: true)]
-    #[Groups(['user:read', 'user:write'])]
+    #[Groups(['user:write'])]
     private ?string $email = null;
 
     #[ORM\Column]
+    #[Groups(['user:read'])]
     private array $roles = [];
 
     /**
@@ -66,15 +69,15 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $password = null;
     
     #[ORM\Column(length: 255, nullable: true)]
-    #[Groups(['user:read', 'user:write', 'story:read'])]
+    #[Groups(['user:write', 'user:read', 'story:read'])]
     private ?string $name = null;
     
     #[ORM\Column(length: 255, nullable: true)]
-    #[Groups(['user:read'])]
+    #[Groups(['user:read:item'])]
     private ?string $quote = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
-    #[Groups(['user:read'])]
+    #[Groups(['user:read:item'])]
     private ?string $description = null;
 
     #[ORM\Column(nullable: true)]
@@ -82,7 +85,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?\DateTimeImmutable $createdAt = null;
 
     #[ORM\Column(nullable: true)]
-    #[Groups(['story:read'])]
+    #[Groups(['user:read:item'])]
     private ?\DateTimeImmutable $updatedAt = null;
 
     #[ORM\Column(nullable: true)]
@@ -90,7 +93,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?\DateTimeImmutable $deletedAt = null;
 
     #[ORM\Column(nullable: true)]
-    #[Groups(['user:read', 'story:read'])]
+    #[Groups(['user:read'])]
     private ?bool $isDeleted = null;
 
     #[ORM\Column(nullable: true)]
@@ -98,29 +101,35 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?bool $isBanned = null;
 
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: Story::class, orphanRemoval: true)]
-    #[Groups(['user:read'])]
+    #[Groups(['user:read:item'])]
     private Collection $stories;
 
     #[ORM\OneToOne(mappedBy: 'user', cascade: ['persist', 'remove'])]
-    #[Groups(['user:read'])]
+    #[Groups(['story:read', 'user:read'])]
     private ?Image $image = null;
 
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: Comment::class, orphanRemoval: true)]
+    #[Groups(['user:read:item'])]
     private Collection $comments;
 
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: Like::class)]
+    #[Groups(['user:read:item'])]
     private Collection $likes;
 
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: Favorite::class)]
+    #[Groups(['user:read:item'])]
     private Collection $favorites;
 
     #[ORM\OneToMany(mappedBy: 'follower', targetEntity: Follow::class)]
+    #[Groups(['user:read:item'])]
     private Collection $imFollowing;
 
     #[ORM\OneToMany(mappedBy: 'followed', targetEntity: Follow::class)]
+    #[Groups(['user:read:item'])]
     private Collection $whoFollowMe;
 
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: Notification::class)]
+    #[Groups(['user:read:item'])]
     private Collection $notifications;
 
     public function __construct()
@@ -133,7 +142,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->favorites = new ArrayCollection();
         $this->imFollowing = new ArrayCollection();
         $this->whoFollowMe = new ArrayCollection();
-        $this->story = new ArrayCollection();
         $this->notifications = new ArrayCollection();
     }
 

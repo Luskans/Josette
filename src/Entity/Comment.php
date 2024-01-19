@@ -3,29 +3,50 @@
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\GetCollection;
+use App\Controller\GetCommentsController;
 use App\Repository\CommentRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: CommentRepository::class)]
-#[ApiResource]
+#[ApiResource(
+    operations: [
+        new GetCollection(
+            uriTemplate: "/connected",
+            controller: GetCommentsController::class,
+            read: false,
+            output: false,
+            openapiContext: [
+                'summary' => 'Gets the currently logged in user'
+            ],
+            normalizationContext: ['groups' => ['user:read:connected']]
+        ),
+    ]
+)]
 class Comment
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['story:read', 'user:read:item'])]
     private ?int $id = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Groups(['story:read:item'])]
     private ?string $content = null;
 
     #[ORM\Column]
+    #[Groups(['story:read:item'])]
     private ?\DateTimeImmutable $createdAt = null;
 
     #[ORM\Column(nullable: true)]
+    #[Groups(['story:read:item'])]
     private ?\DateTimeImmutable $updatedAt = null;
 
     #[ORM\Column(nullable: true)]
+    #[Groups(['story:read:item'])]
     private ?bool $isModerated = null;
 
     #[ORM\ManyToOne(inversedBy: 'comments')]
@@ -34,7 +55,13 @@ class Comment
 
     #[ORM\ManyToOne(inversedBy: 'comments')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['story:read:item'])]
     private ?User $user = null;
+
+    public function __construct()
+    {
+        $this->isModerated = false;
+    }
 
     public function getId(): ?int
     {

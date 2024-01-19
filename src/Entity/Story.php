@@ -19,27 +19,28 @@ use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: StoryRepository::class)]
 #[ApiResource(
+    // normalizationContext: ['groups' => ['story:read']],
     operations: [
         new Get(
-            normalizationContext: ['groups' => ['story:read']],
+            normalizationContext: ['groups' => ['story:read', 'story:read:item']],
             // security: "is_granted('ROLE_USER')"
         ),
         new GetCollection(
-            normalizationContext: ['groups' => ['story:read']],
+            normalizationContext: ['groups' => ['story:read', 'story:read:collection']],
             // security: "is_granted('ROLE_USER')"
-        ),
-        new Patch(
-            security: "is_granted('ROLE_ADMIN') or object.getUser() == user",
-        ),
-        new Delete(
-            security: "is_granted('ROLE_ADMIN') or object.getUser() == user",
         ),
         new Post(
             controller: CreateStoryController::class,
             denormalizationContext: ['groups' => ['story:write']],
-            normalizationContext: ['groups' => ['story:read']],
+            // normalizationContext: ['groups' => ['story:read']],
             // security: "is_granted('ROLE_USER')"
-        )
+        ),
+        // new Patch(
+        //     security: "is_granted('ROLE_ADMIN') or object.getUser() == user",
+        // ),
+        // new Delete(
+        //     security: "is_granted('ROLE_ADMIN') or object.getUser() == user",
+        // ),
     ]
 )]
 class Story
@@ -47,56 +48,56 @@ class Story
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['story:read'])]
+    #[Groups(['story:read', 'user:read:item'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    #[Groups(['story:read', 'story:write', 'user:read', 'theme:read'])]
+    #[Groups(['story:read', 'user:read:item'])]
     private ?string $title = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
-    #[Groups(['story:read', 'story:write', 'user:read', 'theme:read'])]
+    #[Groups(['story:read:collection'])]
     private ?string $synopsis = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
-    #[Groups(['story:read', 'story:write', 'user:read', 'theme:read'])]
+    #[Groups(['story:read', 'user:read:item'])]
     private ?string $content = null;
 
     #[ORM\Column(nullable: true)]
-    #[Groups(['story:read', 'user:read', 'theme:read'])]
+    #[Groups(['story:read', 'user:read:item'])]
     private ?\DateTimeImmutable $createdAt = null;
 
     #[ORM\Column(nullable: true)]
-    #[Groups(['story:read', 'user:read', 'theme:read'])]
+    #[Groups(['story:read', 'user:read:item'])]
     private ?\DateTimeImmutable $updatedAt = null;
 
     #[ORM\Column(nullable: true)]
-    #[Groups(['story:read', 'user:read', 'theme:read'])]
+    #[Groups(['story:read', 'user:read:item'])]
     private ?bool $isModerated = null;
 
     #[ORM\ManyToOne(inversedBy: 'stories')]
     #[ORM\JoinColumn(nullable: false)]
-    #[Groups(['story:read', 'theme:read'])]
+    #[Groups(['story:read'])]
     private ?User $user = null;
 
     #[ORM\OneToOne(mappedBy: 'story', cascade: ['persist', 'remove'])]
-    #[Groups(['story:read', 'user:read', 'theme:read'])]
+    #[Groups(['story:read:item', 'user:read:item'])]
     private ?Image $image = null;
 
     #[ORM\ManyToMany(targetEntity: Theme::class, mappedBy: 'stories')]
-    #[Groups(['story:read', 'user:read'])]
+    #[Groups(['story:read', 'user:read:item'])]
     private Collection $themes;
 
     #[ORM\OneToMany(mappedBy: 'story', targetEntity: Comment::class, orphanRemoval: true)]
-    #[Groups(['story:read', 'user:read'])]
+    #[Groups(['story:read', 'user:read:item'])]
     private Collection $comments;
 
     #[ORM\Column(nullable: true)]
-    #[Groups(['story:read', 'user:read'])]
+    #[Groups(['story:read', 'user:read:item'])]
     private ?int $viewCount = null;
 
     #[ORM\OneToMany(mappedBy: 'story', targetEntity: Like::class)]
-    #[Groups(['story:read', 'user:read'])]
+    #[Groups(['story:read', 'user:read:item'])]
     private Collection $likes;
 
     #[ORM\OneToMany(mappedBy: 'story', targetEntity: Favorite::class)]
@@ -114,6 +115,7 @@ class Story
         $this->likes = new ArrayCollection();
         $this->favorites = new ArrayCollection();
         $this->notifications = new ArrayCollection();
+        $this->viewCount = 0;
     }
 
     public function getId(): ?int

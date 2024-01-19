@@ -39,6 +39,24 @@ class FollowRepository extends ServiceEntityRepository
         }
     }
 
+    /**
+     * Retourne un Follow où follower et followed sont égaux aux valeurs spécifiées.
+     * 
+     * @param mixed $follower valeur de follower
+     * @param mixed $followed valeur de followed
+     * @return Follow|null
+     */
+    public function findOneByFollowerAndFollowed($follower, $followed): ?Follow
+    {
+        return $this->createQueryBuilder('f')
+            ->andWhere('f.follower = :follower')
+            ->andWhere('f.followed = :followed')
+            ->setParameter('follower', $follower)
+            ->setParameter('followed', $followed)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
 //    /**
 //     * @return Follow[] Returns an array of Follow objects
 //     */

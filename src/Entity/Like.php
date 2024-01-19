@@ -5,21 +5,32 @@ namespace App\Entity;
 use ApiPlatform\Metadata\ApiResource;
 use App\Repository\LikeRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
+use ApiPlatform\Metadata\Get;
 
 #[ORM\Entity(repositoryClass: LikeRepository::class)]
 #[ORM\Table(name: '`like`')]
-#[ApiResource]
+#[ApiResource(
+    // normalizationContext: ['groups' => ['like:read']],
+    // operations: [
+    //     new Get(
+    //         normalizationContext: ['groups' => ['like:read']],
+    //     ),
+    // ]
+)]
 class Like
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['story:read', 'user:read:item'])]
     private ?int $id = null;
 
     #[ORM\Column]
     private ?\DateTimeImmutable $likedAt = null;
 
     #[ORM\ManyToOne(inversedBy: 'likes')]
+    // #[Groups([])]
     private ?User $user = null;
 
     #[ORM\ManyToOne(inversedBy: 'likes')]

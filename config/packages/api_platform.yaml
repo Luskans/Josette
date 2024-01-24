@@ -12,3 +12,5 @@ api_platform:
   version: '1.0.0'
   description: Des petites histoires, sans prétention !
   show_webby: false
+  defaults:
+        pagination_items_per_page: 20 # Default value

@@ -23,7 +23,7 @@ services:
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
 
-    # # event listener pour rajouter des infos au token JWT
+    # event listener pour rajouter des infos au token JWT
     App\Events\JWTCreatedListener:
         tags:
             - { 
@@ -40,3 +40,17 @@ services:
     #             event: 'lexik_jwt_authentication.on_authentication_success', 
     #             method: 'onAuthenticationSuccess'
     #         }
+
+    # service pour requête les stories rangées par nombre de like
+    App\Filter\ByLikesExtension:
+        tags:
+            - { name: api_platform.doctrine.orm.query_extension.collection, priority: 1 }
+
+    # service pour requête les stories rangées par reading time
+    App\Filter\ByReadingTimeExtension:
+        tags:
+            - { name: 'api_platform.doctrine.orm.query_extension.collection', priority: 0 }
+
+    App\Filter\ByThemeExtension:
+        tags:
+            - { name: 'api_platform.doctrine.orm.query_extension.collection', priority: 0 }

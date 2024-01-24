@@ -2,6 +2,9 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Doctrine\Orm\Filter\OrderFilter as FilterOrderFilter;
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter as FilterSearchFilter;
+use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\GetCollection;
@@ -43,6 +46,8 @@ use Symfony\Component\Serializer\Annotation\Groups;
         // ),
     ]
 )]
+#[ApiFilter(FilterSearchFilter::class, properties: ['title' => 'partial'])]
+#[ApiFilter(FilterOrderFilter::class, properties: ['createdAt', 'viewCount'], arguments: ['orderParameterName' => 'order'])]
 class Story
 {
     #[ORM\Id]

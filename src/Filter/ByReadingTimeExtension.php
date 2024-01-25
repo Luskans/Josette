@@ -2,14 +2,14 @@
 
 namespace App\Filter;
 
-use ApiPlatform\Doctrine\Orm\Extension\QueryResultCollectionExtensionInterface;
 use ApiPlatform\Doctrine\Orm\Extension\QueryCollectionExtensionInterface;
+use ApiPlatform\Doctrine\Orm\Util\QueryNameGeneratorInterface;
+use ApiPlatform\Metadata\Operation;
 use App\Entity\Story;
 use Doctrine\ORM\QueryBuilder;
-use Doctrine\ORM\Query\Expr\Join;
 use Symfony\Component\HttpFoundation\RequestStack;
 
-final class ReadingTimeOrderExtension implements QueryCollectionExtensionInterface
+final class ByReadingTimeExtension implements QueryCollectionExtensionInterface
 {
     private $requestStack;
 
@@ -18,7 +18,7 @@ final class ReadingTimeOrderExtension implements QueryCollectionExtensionInterfa
         $this->requestStack = $requestStack;
     }
 
-    public function applyToCollection(QueryBuilder $queryBuilder, QueryNameGeneratorInterface $queryNameGenerator, string $resourceClass, string $operationName = null, array $context = [])
+    public function applyToCollection(QueryBuilder $queryBuilder, QueryNameGeneratorInterface $queryNameGenerator, string $resourceClass, Operation $operation = null, array $context = []): void
     {
         if ($resourceClass !== Story::class) {
             return;

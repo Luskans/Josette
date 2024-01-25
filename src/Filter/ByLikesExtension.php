@@ -4,14 +4,15 @@ namespace App\Filter;
 
 use ApiPlatform\Doctrine\Orm\Extension\QueryResultCollectionExtensionInterface;
 use ApiPlatform\Doctrine\Orm\Extension\QueryCollectionExtensionInterface;
+use ApiPlatform\Doctrine\Orm\Util\QueryNameGeneratorInterface;
 use App\Entity\Story;
 use Doctrine\ORM\QueryBuilder;
-use Doctrine\ORM\Query\Expr\Join;
 use Symfony\Component\HttpFoundation\RequestStack;
+use ApiPlatform\Metadata\Operation;
 
 // ...
 
-final class ByLikesExtension implements QueryCollectionExtensionInterface, QueryResultCollectionExtensionInterface
+final class ByLikesExtension implements QueryCollectionExtensionInterface
 {
     private $requestStack;
 
@@ -20,7 +21,9 @@ final class ByLikesExtension implements QueryCollectionExtensionInterface, Query
         $this->requestStack = $requestStack;
     }
 
-    public function applyToCollection(QueryBuilder $queryBuilder, QueryNameGeneratorInterface $queryNameGenerator, string $resourceClass, string $operationName = null, array $context = [])
+    //public function applyToCollection(QueryBuilder $queryBuilder, QueryNameGeneratorInterface $queryNameGenerator, string $resourceClass, string $operationName = null, array $context = [])
+
+    public function applyToCollection(QueryBuilder $queryBuilder, QueryNameGeneratorInterface $queryNameGenerator, string $resourceClass, Operation $operation = null, array $context = []): void
     {
         if ($resourceClass !== Story::class) {
             return;

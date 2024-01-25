@@ -1,6 +1,7 @@
 api_platform:
   formats:
     json: ['application/json']
+    jsonld: ['application/ld+json']
 
   swagger:
     api_keys:
@@ -13,4 +14,28 @@ api_platform:
   description: Des petites histoires, sans prétention !
   show_webby: false
   defaults:
-        pagination_items_per_page: 20 # Default value
+          pagination_items_per_page: 20 # Default value
+
+
+
+
+
+  # defaults:
+  #       pagination_items_per_page: 1 # Default value
+  #       pagination_maximum_items_per_page: 10
+  #       pagination_enabled: true
+  # collection:
+  #   pagination:
+  #       enabled: true
+        # page_parameter_name: _page
+  #       # client_enabled: true
+  #       # client_items_per_page: true
+  #       items_per_page_parameter_name: itemsPerPage
+
+  # defaults:
+  #   pagination_items_per_page: 20
+    # pagination_enabled: false
+  #   pagination_client_enabled: true
+  # collection:
+  #   pagination:
+  #     page_parameter_name: _page

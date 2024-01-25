@@ -16,25 +16,25 @@ use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: ThemeRepository::class)]
 #[ApiResource(
-    // operations: [
-    //     new Get(
-    //         normalizationContext: ['groups' => ['theme:read']],
-    //     ),
-    //     new GetCollection(
-    //         normalizationContext: ['groups' => ['theme:read']],
-    //     ),
-    // ]
+    operations: [
+        // new Get(
+        //     normalizationContext: ['groups' => ['theme:read']],
+        // ),
+        new GetCollection(
+            normalizationContext: ['groups' => ['theme:read']],
+        ),
+    ]
 )]
 class Theme
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    // #[Groups(['theme:read'])]
+    #[Groups(['theme:read'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['story:read', 'user:read:item'])]
+    #[Groups(['theme:read', 'story:read', 'user:read:item'])]
     private ?string $name = null;
 
     #[ORM\ManyToMany(targetEntity: Story::class, inversedBy: 'themes')]

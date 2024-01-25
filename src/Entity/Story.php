@@ -44,7 +44,13 @@ use Symfony\Component\Serializer\Annotation\Groups;
         // new Delete(
         //     security: "is_granted('ROLE_ADMIN') or object.getUser() == user",
         // ),
-    ]
+    ],
+    paginationClientEnabled: true
+    // attributes: [
+    //     "pagination_items_per_page" => 5,
+    //     "pagination_maximum_items_per_page" => 50,
+    //     "pagination_client_items_per_page" => true,
+    // ],
 )]
 #[ApiFilter(FilterSearchFilter::class, properties: ['title' => 'partial'])]
 #[ApiFilter(FilterOrderFilter::class, properties: ['createdAt', 'viewCount'], arguments: ['orderParameterName' => 'order'])]

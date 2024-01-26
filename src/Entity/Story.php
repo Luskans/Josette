@@ -120,6 +120,7 @@ class Story
     public function __construct()
     {
         $this->createdAt = new DateTimeImmutable();
+        $this->updatedAt = new DateTimeImmutable();
         $this->isModerated = false;
         $this->themes = new ArrayCollection();
         $this->comments = new ArrayCollection();

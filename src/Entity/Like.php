@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Doctrine\Odm\Filter\SearchFilter;
+use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiResource;
 use App\Repository\LikeRepository;
 use Doctrine\ORM\Mapping as ORM;
@@ -18,6 +20,7 @@ use ApiPlatform\Metadata\Get;
     //     ),
     // ]
 )]
+#[ApiFilter(SearchFilter::class, properties: ['user.id' => 'exact', 'story.id' => 'exact'])]
 class Like
 {
     #[ORM\Id]
@@ -30,10 +33,10 @@ class Like
     private ?\DateTimeImmutable $likedAt = null;
 
     #[ORM\ManyToOne(inversedBy: 'likes')]
-    // #[Groups([])]
     private ?User $user = null;
 
     #[ORM\ManyToOne(inversedBy: 'likes')]
+
     private ?Story $story = null;
 
     public function getId(): ?int

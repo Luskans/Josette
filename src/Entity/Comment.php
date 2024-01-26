@@ -3,9 +3,14 @@
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Patch;
+use ApiPlatform\Metadata\Post;
+use App\Controller\CreateCommentController;
 use App\Controller\GetCommentsController;
 use App\Repository\CommentRepository;
+use DateTimeImmutable;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
@@ -13,15 +18,18 @@ use Symfony\Component\Serializer\Annotation\Groups;
 #[ORM\Entity(repositoryClass: CommentRepository::class)]
 #[ApiResource(
     operations: [
-        new GetCollection(
-            uriTemplate: "/connected",
-            controller: GetCommentsController::class,
-            read: false,
-            output: false,
-            openapiContext: [
-                'summary' => 'Gets the currently logged in user'
-            ],
-            normalizationContext: ['groups' => ['user:read:connected']]
+        new Post(
+            controller: CreateCommentController::class,
+            denormalizationContext: ['groups' => ['comment:write']],
+            // security: "is_granted('ROLE_USER')"
+        ),
+        new Patch(
+            // denormalizationContext: ['groups' => ['comment:patch']],
+            // security: "is_granted('ROLE_USER')"
+        ),
+        new Delete(
+            // denormalizationContext: ['groups' => ['comment:write']],
+            // security: "is_granted('ROLE_USER')"
         ),
     ]
 )]
@@ -34,7 +42,7 @@ class Comment
     private ?int $id = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
-    #[Groups(['story:read:item'])]
+    #[Groups(['comment:write', 'comment:patch', 'story:read:item'])]
     private ?string $content = null;
 
     #[ORM\Column]
@@ -42,7 +50,7 @@ class Comment
     private ?\DateTimeImmutable $createdAt = null;
 
     #[ORM\Column(nullable: true)]
-    #[Groups(['story:read:item'])]
+    #[Groups(['comment:patch', 'story:read:item'])]
     private ?\DateTimeImmutable $updatedAt = null;
 
     #[ORM\Column(nullable: true)]
@@ -60,6 +68,7 @@ class Comment
 
     public function __construct()
     {
+        $this->createdAt = new DateTimeImmutable();
         $this->isModerated = false;
     }
 

@@ -45,7 +45,8 @@ use Symfony\Component\Serializer\Annotation\Groups;
         //     security: "is_granted('ROLE_ADMIN') or object.getUser() == user",
         // ),
     ],
-    paginationClientEnabled: true
+    // paginationClientEnabled: true,
+    paginationItemsPerPage: 20
     // attributes: [
     //     "pagination_items_per_page" => 5,
     //     "pagination_maximum_items_per_page" => 50,
@@ -59,7 +60,7 @@ class Story
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['story:read', 'user:read:item'])]
+    #[Groups(['story:read', 'user:read:item', 'comment:read:collection', 'like:read'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255, nullable: true)]

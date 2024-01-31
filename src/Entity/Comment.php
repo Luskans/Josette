@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\GetCollection;
@@ -14,10 +15,15 @@ use DateTimeImmutable;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter as FilterSearchFilter;
 
 #[ORM\Entity(repositoryClass: CommentRepository::class)]
 #[ApiResource(
     operations: [
+        new GetCollection(
+            normalizationContext: ['groups' => ['comment:read', 'comment:read:collection']],
+            // security: "is_granted('ROLE_USER')"
+        ),
         new Post(
             controller: CreateCommentController::class,
             denormalizationContext: ['groups' => ['comment:write']],
@@ -31,39 +37,42 @@ use Symfony\Component\Serializer\Annotation\Groups;
             // denormalizationContext: ['groups' => ['comment:write']],
             // security: "is_granted('ROLE_USER')"
         ),
-    ]
+    ],
+    paginationItemsPerPage: 10
 )]
+#[ApiFilter(FilterSearchFilter::class, properties: ['story.id' => 'exact'])]
 class Comment
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['story:read', 'user:read:item'])]
+    #[Groups([ 'comment:read:collection', 'story:read', 'user:read:item'])]
     private ?int $id = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
-    #[Groups(['comment:write', 'comment:patch', 'story:read:item'])]
+    #[Groups(['comment:write', 'comment:patch',  'comment:read:collection'])]
     private ?string $content = null;
 
     #[ORM\Column]
-    #[Groups(['story:read:item'])]
+    #[Groups([ 'comment:read:collection'])]
     private ?\DateTimeImmutable $createdAt = null;
 
     #[ORM\Column(nullable: true)]
-    #[Groups(['comment:patch', 'story:read:item'])]
+    #[Groups(['comment:patch',  'comment:read:collection'])]
     private ?\DateTimeImmutable $updatedAt = null;
 
     #[ORM\Column(nullable: true)]
-    #[Groups(['story:read:item'])]
+    #[Groups([ 'comment:read:collection'])]
     private ?bool $isModerated = null;
 
     #[ORM\ManyToOne(inversedBy: 'comments')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['comment:read:collection'])]
     private ?Story $story = null;
 
     #[ORM\ManyToOne(inversedBy: 'comments')]
     #[ORM\JoinColumn(nullable: false)]
-    #[Groups(['story:read:item'])]
+    #[Groups(['comment:read:collection'])]
     private ?User $user = null;
 
     public function __construct()

@@ -38,6 +38,8 @@ security:
         - { path: /api/stories, roles: PUBLIC_ACCESS }
         - { path: /api/users, roles: PUBLIC_ACCESS }
         - { path: /api/themes, roles: PUBLIC_ACCESS }
+        - { path: /api/comments, roles: PUBLIC_ACCESS }
+        - { path: /api/likes, roles: PUBLIC_ACCESS }
         # - { path: /api/themes, roles: PUBLIC_ACCESS }
         # - { path: /api/stories/{id}, roles: PUBLIC_ACCESS }
         - { path: ^/api, roles: IS_AUTHENTICATED_FULLY }

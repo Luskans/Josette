@@ -2,10 +2,14 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter as FilterSearchFilter;
+use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\Post;
+use App\Controller\CreateFollow2Controller;
 use App\Repository\FollowRepository;
 use Doctrine\ORM\Mapping as ORM;
 use App\Controller\CreateFollowController;
@@ -20,32 +24,43 @@ use Symfony\Component\Serializer\Annotation\Groups;
         //     normalizationContext: ['groups' => ['follow:read']]
         // ),
         new GetCollection(
-            normalizationContext: ['groups' => ['follow:read:collection']]
+            normalizationContext: ['groups' => ['follow:read']]
         ),
+        // new Post(
+        //     uriTemplate: "/follows",
+        //     controller: CreateFollowController::class,
+        //     denormalizationContext: ['groups' => ['follow:write']]
+        // ),
         new Post(
-            uriTemplate: "/follows",
-            controller: CreateFollowController::class,
-            denormalizationContext: ['groups' => ['follow:write']]
+            controller: CreateFollow2Controller::class,
+            // denormalizationContext: ['groups' => ['like:write']],
+            // security: "is_granted('ROLE_USER')"
+        ),
+        new Delete(
+            // denormalizationContext: ['groups' => ['like:write']],
+            // security: "is_granted('ROLE_USER')"
         ),
     ]
 )]
+#[ApiFilter(FilterSearchFilter::class, properties: ['follower.id' => 'exact', 'followed.id' => 'exact'])]
 class Follow
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['user:read:item'])]
+    #[Groups(['user:read:item', 'follow:read'])]
     private ?int $id = null;
 
     #[ORM\Column]
+    #[Groups(['follow:read'])]
     private ?\DateTimeImmutable $createdAt = null;
 
     #[ORM\ManyToOne(inversedBy: 'imFollowing')]
-    // #[Groups([])]
+    #[Groups(['follow:read'])]
     private ?User $follower = null;
 
     #[ORM\ManyToOne(inversedBy: 'whoFollowMe')]
-    // #[Groups([])]
+    #[Groups(['follow:read'])]
     private ?User $followed = null;
 
     public function __construct()

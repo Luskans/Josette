@@ -47,11 +47,11 @@ class Like
     private ?\DateTimeImmutable $likedAt = null;
 
     #[ORM\ManyToOne(inversedBy: 'likes')]
-    #[Groups(['like:read', 'like:write', 'story:read', 'user:read:item'])]
+    #[Groups(['like:read', 'story:read', 'user:read:item'])]
     private ?User $user = null;
 
     #[ORM\ManyToOne(inversedBy: 'likes')]
-    #[Groups(['like:read', 'like:write', 'story:read', 'user:read:item'])]
+    #[Groups(['like:read', 'story:read', 'user:read:item'])]
     private ?Story $story = null;
 
     public function __construct()

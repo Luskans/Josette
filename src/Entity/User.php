@@ -49,7 +49,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['user:read', 'story:read', 'comment:read:collection', 'like:read'])]
+    #[Groups(['user:read', 'story:read', 'comment:read:collection', 'like:read', 'favorite:read', 'follow:read'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 180, unique: true)]
@@ -68,7 +68,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $password = null;
     
     #[ORM\Column(length: 255, nullable: true)]
-    #[Groups(['user:write', 'user:read', 'story:read'])]
+    #[Groups(['user:write', 'user:read', 'story:read', 'comment:read:collection'])]
     private ?string $name = null;
     
     #[ORM\Column(length: 255, nullable: true)]
@@ -104,7 +104,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private Collection $stories;
 
     #[ORM\OneToOne(mappedBy: 'user', cascade: ['persist', 'remove'])]
-    #[Groups(['story:read', 'user:read'])]
+    #[Groups(['story:read', 'user:read', 'comment:read:collection'])]
     private ?Image $image = null;
 
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: Comment::class, orphanRemoval: true)]

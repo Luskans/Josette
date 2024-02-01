@@ -21,7 +21,7 @@ use ApiPlatform\Doctrine\Orm\Filter\SearchFilter as FilterSearchFilter;
 #[ApiResource(
     operations: [
         new GetCollection(
-            normalizationContext: ['groups' => ['comment:read', 'comment:read:collection']],
+            normalizationContext: ['groups' => ['comment:read:collection']],
             // security: "is_granted('ROLE_USER')"
         ),
         new Post(
@@ -50,7 +50,7 @@ class Comment
     private ?int $id = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
-    #[Groups(['comment:write', 'comment:patch',  'comment:read:collection'])]
+    #[Groups(['comment:read:collection', 'comment:write', 'comment:patch'])]
     private ?string $content = null;
 
     #[ORM\Column]
@@ -58,11 +58,11 @@ class Comment
     private ?\DateTimeImmutable $createdAt = null;
 
     #[ORM\Column(nullable: true)]
-    #[Groups(['comment:patch',  'comment:read:collection'])]
+    #[Groups(['comment:read:collection', 'comment:patch'])]
     private ?\DateTimeImmutable $updatedAt = null;
 
     #[ORM\Column(nullable: true)]
-    #[Groups([ 'comment:read:collection'])]
+    #[Groups(['comment:read:collection'])]
     private ?bool $isModerated = null;
 
     #[ORM\ManyToOne(inversedBy: 'comments')]

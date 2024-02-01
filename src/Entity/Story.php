@@ -38,12 +38,12 @@ use Symfony\Component\Serializer\Annotation\Groups;
             // normalizationContext: ['groups' => ['story:read']],
             // security: "is_granted('ROLE_USER')"
         ),
-        // new Patch(
-        //     security: "is_granted('ROLE_ADMIN') or object.getUser() == user",
-        // ),
-        // new Delete(
-        //     security: "is_granted('ROLE_ADMIN') or object.getUser() == user",
-        // ),
+        new Patch(
+            // security: "is_granted('ROLE_ADMIN') or object.getUser() == user",
+        ),
+        new Delete(
+            // security: "is_granted('ROLE_ADMIN') or object.getUser() == user",
+        ),
     ],
     // paginationClientEnabled: true,
     paginationItemsPerPage: 20
@@ -60,7 +60,7 @@ class Story
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['story:read', 'user:read:item', 'comment:read:collection', 'like:read'])]
+    #[Groups(['story:read', 'user:read:item', 'comment:read:collection', 'like:read', 'favorite:read'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255, nullable: true)]

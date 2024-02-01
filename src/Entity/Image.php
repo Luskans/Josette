@@ -33,7 +33,7 @@ class Image
     private ?int $id = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    #[Groups(['story:read', 'user:read'])]
+    #[Groups(['story:read', 'user:read', 'comment:read:collection'])]
     private ?string $imagePath = null;
 
     #[ORM\Column(length: 255, nullable: true)]
@@ -43,7 +43,7 @@ class Image
     private $file;
 
     #[ORM\Column(length: 255, nullable: true)]
-    #[Groups(['story:read', 'user:read'])]
+    #[Groups(['story:read', 'user:read', 'comment:read:collection'])]
     private ?string $name = null;
 
     #[ORM\OneToOne(inversedBy: 'image', cascade: ['persist', 'remove'])]

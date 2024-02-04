@@ -21,16 +21,16 @@ use Symfony\Component\Serializer\Annotation\Groups;
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ApiResource(
     operations: [
-        new Get(
-            uriTemplate: "/connected",
-            controller: ConnectedUserController::class,
-            read: false,
-            output: false,
-            openapiContext: [
-                'summary' => 'Gets the currently logged in user'
-            ],
-            normalizationContext: ['groups' => ['user:read:connected']]
-        ),
+        // new Get(
+        //     uriTemplate: "/connected",
+        //     controller: ConnectedUserController::class,
+        //     read: false,
+        //     output: false,
+        //     openapiContext: [
+        //         'summary' => 'Gets the currently logged in user'
+        //     ],
+        //     normalizationContext: ['groups' => ['user:read:connected']]
+        // ),
         new Get(
             normalizationContext: ['groups' => ['user:read', 'user:read:item']]
         ),

@@ -53,7 +53,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
     //     "pagination_client_items_per_page" => true,
     // ],
 )]
-#[ApiFilter(FilterSearchFilter::class, properties: ['title' => 'partial'])]
+#[ApiFilter(FilterSearchFilter::class, properties: ['title' => 'partial', 'user.id' => 'exact'])]
 #[ApiFilter(FilterOrderFilter::class, properties: ['createdAt', 'viewCount'], arguments: ['orderParameterName' => 'order'])]
 class Story
 {

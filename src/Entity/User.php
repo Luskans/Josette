@@ -5,6 +5,7 @@ namespace App\Entity;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
 use App\Controller\CreateUserController;
 use App\Controller\ConnectedUserController;
@@ -41,6 +42,9 @@ use Symfony\Component\Serializer\Annotation\Groups;
             uriTemplate: "/signup",
             controller: CreateUserController::class,
             denormalizationContext: ['groups' => ['user:write']]
+        ),
+        new Patch(
+            // denormalizationContext: ['groups' => ['user:write']]
         ),
     ]
 )]

@@ -34,7 +34,9 @@ use Symfony\Component\Serializer\Annotation\Groups;
         ),
         new Post(
             controller: CreateStoryController::class,
-            denormalizationContext: ['groups' => ['story:write']],
+            deserialize: false, 
+
+            // denormalizationContext: ['groups' => ['story:write']],
             // normalizationContext: ['groups' => ['story:read']],
             // security: "is_granted('ROLE_USER')"
         ),

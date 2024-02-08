@@ -8,21 +8,15 @@ use ApiPlatform\Metadata\Put;
 use ApiPlatform\Metadata\Post;
 use App\Repository\ImageRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 #[ORM\Entity(repositoryClass: ImageRepository::class)]
+#[Vich\Uploadable]
 #[ApiResource(
     operations: [
-        // new Put(
-        //     security: "object.getUser() == user",
-        // ),
-        // new Delete(
-        //     security: "is_granted('ROLE_ADMIN') or object.getUser() == user",
-        // ),
-        // new Post(
-        //     security: "is_granted('ROLE_USER')"
-        // )
     ]
 )]
 class Image
@@ -34,17 +28,15 @@ class Image
 
     #[ORM\Column(length: 255, nullable: true)]
     #[Groups(['story:read', 'user:read', 'comment:read:collection'])]
-    private ?string $imagePath = null;
-
-    #[ORM\Column(length: 255, nullable: true)]
-    // #[Groups([])]
-    private ?string $thumbnailPath = null;
-
-    private $file;
+    private ?string $path = null;
 
     #[ORM\Column(length: 255, nullable: true)]
     #[Groups(['story:read', 'user:read', 'comment:read:collection'])]
     private ?string $name = null;
+
+    // NOTE: This is not a mapped field of entity metadata, just a simple property.
+    #[Vich\UploadableField(mapping: 'image', fileNameProperty: 'name')]
+    private $file;
 
     #[ORM\OneToOne(inversedBy: 'image', cascade: ['persist', 'remove'])]
     private ?User $user = null;
@@ -52,105 +44,87 @@ class Image
     #[ORM\OneToOne(inversedBy: 'image', cascade: ['persist', 'remove'])]
     private ?Story $story = null;
 
+    #[ORM\Column(nullable: true)]
+    private ?\DateTimeImmutable $updatedAt = null;
+
+
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getImagePath(): ?string
+    public function getPath(): ?string
     {
-        return $this->imagePath;
+        return $this->path;
     }
 
-    public function setImagePath(?string $imagePath): self
+    public function setPath(?string $path): self
     {
-        $this->imagePath = $imagePath;
+        $this->path = $path;
 
         return $this;
     }
 
-    public function getThumbnailPath(): ?string
+    public function getName(): ?string
     {
-        return $this->thumbnailPath;
+        return $this->name;
     }
 
-    public function setThumbnailPath(?string $thumbnailPath): self
+    public function setName(?string $name): self
     {
-        $this->thumbnailPath = $thumbnailPath;
+        $this->name = $name;
 
         return $this;
     }
 
-//     public function upload()
-//     {
-//         if (null === $this->getFile()) {
-//             return;
-//         }
+    public function setFile(?File $file = null): void
+    {
+        $this->file = $file;
+        if (null !== $file) {
+            // It is required that at least one field changes if you are using doctrine
+            // otherwise the event listeners won't be called and the file is lost
+            $this->updatedAt = new \DateTimeImmutable();
+        }
+    }
 
-//         // You must create these directories or make them writable before attempting to upload.
-//         $originalDirectory = 'path/to/uploads/directory/original/';
-//         $thumbnailDirectory = 'path/to/uploads/directory/thumbnail/';
+    public function getFile(): ?File
+    {
+        return $this->file;
+    }
 
-//         // You can also store file name in the database if needed.
-//         $fileName = md5(uniqid()) . '.' . $this->getFile()->guessExtension();
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
 
-//         // Move the file to the original directory
-//         $this->getFile()->move($originalDirectory, $fileName);
+    public function setUser(?User $user): self
+    {
+        $this->user = $user;
 
-//         // Update the 'imagePath' property to store the file name
-//         $this->imagePath = $originalDirectory . $fileName;
+        return $this;
+    }
 
-//         // Create and store thumbnail image
-//         $thumbnailFileName = 'thumb-' . $fileName;
-//         // This is where you would use a service like LiipImagine (or any other)
-//         // to resize the image and save it to the thumbnail directory.
-//         // Imagick or GD could be used here directly if you wanted to do it manually.
-        
-//         // For example, with Imagick:
-//         $imagine = new \Imagick($this->imagePath);
-//         $imagine->thumbnailImage(200, 0); // Width 200px and keep aspect ratio
-//         $imagine->writeImage($thumbnailDirectory . $thumbnailFileName);
+    public function getStory(): ?Story
+    {
+        return $this->story;
+    }
 
-//         // Update the 'thumbnailPath' property to store the thumbnail file name
-//         $this->thumbnailPath = $thumbnailDirectory . $thumbnailFileName;
+    public function setStory(?Story $story): self
+    {
+        $this->story = $story;
 
-//         // 'file' is not persisted to the database, so we clear it after use.
-//         $this->file = null;
-//     }
+        return $this;
+    }
 
-public function getName(): ?string
-{
-    return $this->name;
-}
+    public function getUpdatedAt(): ?\DateTimeImmutable
+    {
+        return $this->updatedAt;
+    }
 
-public function setName(?string $name): self
-{
-    $this->name = $name;
+    public function setUpdatedAt(?\DateTimeImmutable $updatedAt): self
+    {
+        $this->updatedAt = $updatedAt;
 
-    return $this;
-}
-
-public function getUser(): ?User
-{
-    return $this->user;
-}
-
-public function setUser(?User $user): self
-{
-    $this->user = $user;
-
-    return $this;
-}
-
-public function getStory(): ?Story
-{
-    return $this->story;
-}
-
-public function setStory(?Story $story): self
-{
-    $this->story = $story;
-
-    return $this;
-}
+        return $this;
+    }
 }

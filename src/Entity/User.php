@@ -9,6 +9,7 @@ use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
 use App\Controller\CreateUserController;
 use App\Controller\ConnectedUserController;
+use App\Controller\UpdateUserController;
 use App\Repository\UserRepository;
 use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -44,6 +45,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
             denormalizationContext: ['groups' => ['user:write']]
         ),
         new Patch(
+            controller: UpdateUserController::class,
             // denormalizationContext: ['groups' => ['user:write']]
         ),
     ]

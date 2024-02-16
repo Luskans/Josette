@@ -51,7 +51,7 @@ class CreateStoryController extends AbstractController
     //     );
     // }
 
-    public function __invoke(Request $request,  EntityManagerInterface $entityManager): JsonResponse
+    public function __invoke(Request $request, EntityManagerInterface $entityManager): JsonResponse
     {
         // $data = json_decode($request->getContent(), true); // C'était pour du JSON, on va gérer du multipart/form-data
 

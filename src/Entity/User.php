@@ -7,6 +7,7 @@ use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Put;
 use App\Controller\CreateUserController;
 use App\Controller\ConnectedUserController;
 use App\Controller\UpdateUserController;
@@ -44,9 +45,10 @@ use Symfony\Component\Serializer\Annotation\Groups;
             controller: CreateUserController::class,
             denormalizationContext: ['groups' => ['user:write']]
         ),
-        new Patch(
+        new Post(
+            uriTemplate: "/users/update",
             controller: UpdateUserController::class,
-            // denormalizationContext: ['groups' => ['user:write']]
+            deserialize: false,
         ),
     ]
 )]

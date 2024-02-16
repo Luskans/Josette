@@ -5,6 +5,11 @@ api_platform:
     jsonld: ['application/ld+json']
     # jsonapi: ['application/vnd.api+json']
     form: ['multipart/form-data']
+  patch_formats:
+    json: ['application/merge-patch+json']
+    # jsonapi: ['application/vnd.api+json']
+    form: ['multipart/form-data']
+
 
   swagger:
     api_keys:
@@ -17,7 +22,7 @@ api_platform:
   description: Des petites histoires, sans prétention !
   show_webby: false
   defaults:
-          pagination_items_per_page: 20 # Default value
+    pagination_items_per_page: 20 # Default value
 
 
 

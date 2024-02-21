@@ -28,10 +28,6 @@ class Image
 
     #[ORM\Column(length: 255, nullable: true)]
     #[Groups(['story:read', 'user:read', 'comment:read:collection'])]
-    private ?string $path = null;
-
-    #[ORM\Column(length: 255, nullable: true)]
-    #[Groups(['story:read', 'user:read', 'comment:read:collection'])]
     private ?string $name = null;
 
     // NOTE: This is not a mapped field of entity metadata, just a simple property.
@@ -51,18 +47,6 @@ class Image
     public function getId(): ?int
     {
         return $this->id;
-    }
-
-    public function getPath(): ?string
-    {
-        return $this->path;
-    }
-
-    public function setPath(?string $path): self
-    {
-        $this->path = $path;
-
-        return $this;
     }
 
     public function getName(): ?string

@@ -11,3 +11,6 @@ api_login:
 api_doc:
     path: /
     controller: api_platform.swagger_ui.action
+
+api_refresh_token:
+    path: /api/token/refresh

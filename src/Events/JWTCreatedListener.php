@@ -81,18 +81,18 @@ class JWTCreatedListener
         // $payload['email'] = $user->getEmail();
         $payload['roles'] = $user->getRoles();
         $payload['name'] = $user->getName();
-        $payload['quote'] = $user->getQuote();
-        $payload['description'] = $user->getDescription();
+        // $payload['quote'] = $user->getQuote();
+        // $payload['description'] = $user->getDescription();
         $payload['createdAt'] = $user->getCreatedAt();
         // $payload['updatedAt'] = $user->getUpdatedAt();
         $payload['isDeleted'] = $user->isIsDeleted();
         $payload['isBanned'] = $user->isIsBanned();
-        $payload['image'] = $user->getImage();
+        $payload['image'] = $user->getImage()->getName();
         // $payload['stories'] = $user->getStories();
         // $payload['comments'] = $user->getComments();
         // $payload['likes'] = $user->getLikes();
-        $payload['favorites'] = $user->getFavorites();
-        $payload['imFollowing'] = $user->getImFollowing();
+        // $payload['favorites'] = $user->getFavorites();
+        // $payload['imFollowing'] = $user->getImFollowing();
         // $payload['whoFollowMe'] = $user->getWhoFollowMe();
         // $payload['notifications'] = $user->getNotifications();
         

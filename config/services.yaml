@@ -32,7 +32,7 @@ services:
                 method: 'onJWTCreated' 
             }
 
-    # V2 event listener pour renvoyer le token JWT en cookie http (bug cookie non stocké)
+    # event listener pour renvoyer le token JWT en cookie http (bug cookie non stocké)
     # App\Events\AuthenticationSuccessListener:
     #     tags:
     #         - { 
@@ -51,6 +51,7 @@ services:
         tags:
             - { name: 'api_platform.doctrine.orm.query_extension.collection', priority: 0 }
 
+    # service pour requête les stories rangées par thèmes
     App\Filter\ByThemeExtension:
         tags:
             - { name: 'api_platform.doctrine.orm.query_extension.collection', priority: 0 }

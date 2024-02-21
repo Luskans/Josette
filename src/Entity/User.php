@@ -30,6 +30,15 @@ use Symfony\Component\Serializer\Annotation\Groups;
         //     read: false,
         //     output: false,
         //     openapiContext: [
+        //         'summary' => 'Gets the currently logged in user',
+        //         'security' => ['cookieAuth' => []]
+        //     ],
+        //     normalizationContext: ['groups' => ['user:read:connected']]
+        // ),
+        // new Get(
+        //     uriTemplate: "/connected",
+        //     controller: ConnectedUserController::class,
+        //     openapiContext: [
         //         'summary' => 'Gets the currently logged in user'
         //     ],
         //     normalizationContext: ['groups' => ['user:read:connected']]
@@ -43,12 +52,13 @@ use Symfony\Component\Serializer\Annotation\Groups;
         new Post(
             uriTemplate: "/signup",
             controller: CreateUserController::class,
-            denormalizationContext: ['groups' => ['user:write']]
+            denormalizationContext: ['groups' => ['user:write']],
         ),
         new Post(
             uriTemplate: "/users/update",
             controller: UpdateUserController::class,
             deserialize: false,
+            security: "is_granted('ROLE_ADMIN') or object.owner == user"
         ),
     ]
 )]

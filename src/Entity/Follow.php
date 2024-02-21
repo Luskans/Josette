@@ -24,7 +24,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
         //     normalizationContext: ['groups' => ['follow:read']]
         // ),
         new GetCollection(
-            normalizationContext: ['groups' => ['follow:read']]
+            normalizationContext: ['groups' => ['follow:read']],
         ),
         // new Post(
         //     uriTemplate: "/follows",
@@ -33,10 +33,12 @@ use Symfony\Component\Serializer\Annotation\Groups;
         // ),
         new Post(
             controller: CreateFollow2Controller::class,
+            security: "is_granted('ROLE_ADMIN') or object.owner == user"
             // denormalizationContext: ['groups' => ['like:write']],
             // security: "is_granted('ROLE_USER')"
         ),
         new Delete(
+            security: "is_granted('ROLE_ADMIN') or object.owner == user"
             // denormalizationContext: ['groups' => ['like:write']],
             // security: "is_granted('ROLE_USER')"
         ),

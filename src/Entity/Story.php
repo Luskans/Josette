@@ -35,7 +35,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
         new Post(
             controller: CreateStoryController::class,
             deserialize: false, 
-
+            security: "is_granted('ROLE_ADMIN') or object.owner == user"
             // denormalizationContext: ['groups' => ['story:write']],
             // normalizationContext: ['groups' => ['story:read']],
             // security: "is_granted('ROLE_USER')"
@@ -44,6 +44,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
             // security: "is_granted('ROLE_ADMIN') or object.getUser() == user",
         ),
         new Delete(
+            security: "is_granted('ROLE_ADMIN') or object.owner == user"
             // security: "is_granted('ROLE_ADMIN') or object.getUser() == user",
         ),
     ],
@@ -95,7 +96,7 @@ class Story
     private ?User $user = null;
 
     #[ORM\OneToOne(mappedBy: 'story', cascade: ['persist', 'remove'])]
-    #[Groups(['story:read:item', 'user:read:item'])]
+    #[Groups(['story:read', 'user:read:item'])]
     private ?Image $image = null;
 
     #[ORM\ManyToMany(targetEntity: Theme::class, mappedBy: 'stories')]

@@ -27,13 +27,16 @@ use ApiPlatform\Doctrine\Orm\Filter\SearchFilter as FilterSearchFilter;
         new Post(
             controller: CreateCommentController::class,
             denormalizationContext: ['groups' => ['comment:write']],
+            security: "is_granted('ROLE_ADMIN') or object.owner == user"
             // security: "is_granted('ROLE_USER')"
         ),
         new Patch(
+            security: "is_granted('ROLE_ADMIN') or object.owner == user"
             // denormalizationContext: ['groups' => ['comment:patch']],
             // security: "is_granted('ROLE_USER')"
         ),
         new Delete(
+            security: "is_granted('ROLE_ADMIN') or object.owner == user"
             // denormalizationContext: ['groups' => ['comment:write']],
             // security: "is_granted('ROLE_USER')"
         ),

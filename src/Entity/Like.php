@@ -25,11 +25,11 @@ use DateTimeImmutable;
         new Post(
             controller: CreateLikeController::class,
             // denormalizationContext: ['groups' => ['like:write']],
-            // security: "is_granted('ROLE_USER')"
+            security: "is_granted('ROLE_ADMIN') or object.owner == user"
         ),
         new Delete(
             // denormalizationContext: ['groups' => ['like:write']],
-            // security: "is_granted('ROLE_USER')"
+            security: "is_granted('ROLE_ADMIN') or object.owner == user"
         ),
     ]
 )]

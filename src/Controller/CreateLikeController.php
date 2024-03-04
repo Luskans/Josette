@@ -34,9 +34,7 @@ class CreateLikeController extends AbstractController
         $entityManager->flush();
         
         return new JsonResponse(
-            // Tu peux inclure les informations que tu juges nécessaires
-            // ['status' => 'Like created!'],
-            [], 
+            ['status' => 'Like created!'], 
             JsonResponse::HTTP_CREATED
         );
     }

@@ -6,7 +6,6 @@ use App\Entity\User;
 use App\Repository\UserRepository;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\Persistence\ObjectManager;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -47,12 +46,8 @@ class CreateUserController extends AbstractController
 
         $entityManager->persist($user);
         $entityManager->flush();
-
-        // Ici, tu pourrais également générer un JWT token pour l'utilisateur
-        // et le renvoyer pour un accès immédiat après l'inscription
         
         return new JsonResponse(
-            // Tu peux inclure les informations que tu juges nécessaires
             ['status' => 'User created!'], 
             JsonResponse::HTTP_CREATED
         );

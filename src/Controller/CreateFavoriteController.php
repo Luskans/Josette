@@ -34,9 +34,7 @@ class CreateFavoriteController extends AbstractController
         $entityManager->flush();
         
         return new JsonResponse(
-            // Tu peux inclure les informations que tu juges nécessaires
-            // ['status' => 'Favorite created!'],
-            [], 
+            ['status' => 'Favorite created!'], 
             JsonResponse::HTTP_CREATED
         );
     }

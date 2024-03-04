@@ -9,7 +9,6 @@ use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Get;
-use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
 use App\Controller\CreateStoryController;
 use App\Repository\StoryRepository;
@@ -22,39 +21,23 @@ use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: StoryRepository::class)]
 #[ApiResource(
-    // normalizationContext: ['groups' => ['story:read']],
     operations: [
         new Get(
             normalizationContext: ['groups' => ['story:read', 'story:read:item']],
-            // security: "is_granted('ROLE_USER')"
         ),
         new GetCollection(
             normalizationContext: ['groups' => ['story:read', 'story:read:collection']],
-            // security: "is_granted('ROLE_USER')"
         ),
         new Post(
             controller: CreateStoryController::class,
             deserialize: false, 
             security: "is_granted('ROLE_ADMIN') or object.owner == user"
-            // denormalizationContext: ['groups' => ['story:write']],
-            // normalizationContext: ['groups' => ['story:read']],
-            // security: "is_granted('ROLE_USER')"
-        ),
-        new Patch(
-            // security: "is_granted('ROLE_ADMIN') or object.getUser() == user",
         ),
         new Delete(
             security: "is_granted('ROLE_ADMIN') or object.owner == user"
-            // security: "is_granted('ROLE_ADMIN') or object.getUser() == user",
         ),
     ],
-    // paginationClientEnabled: true,
     paginationItemsPerPage: 20
-    // attributes: [
-    //     "pagination_items_per_page" => 5,
-    //     "pagination_maximum_items_per_page" => 50,
-    //     "pagination_client_items_per_page" => true,
-    // ],
 )]
 #[ApiFilter(FilterSearchFilter::class, properties: ['title' => 'partial', 'user.id' => 'exact'])]
 #[ApiFilter(FilterOrderFilter::class, properties: ['createdAt', 'viewCount'], arguments: ['orderParameterName' => 'order'])]

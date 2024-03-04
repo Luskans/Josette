@@ -7,40 +7,25 @@ use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\GetCollection;
-use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\Post;
-use App\Controller\CreateFollow2Controller;
+use App\Controller\CreateFollowController;
 use App\Repository\FollowRepository;
 use Doctrine\ORM\Mapping as ORM;
-use App\Controller\CreateFollowController;
 use DateTimeImmutable;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: FollowRepository::class)]
 #[ApiResource(
-    // normalizationContext: ['groups' => ['follow:read']],
     operations: [
-        // new Get(
-        //     normalizationContext: ['groups' => ['follow:read']]
-        // ),
         new GetCollection(
             normalizationContext: ['groups' => ['follow:read']],
         ),
-        // new Post(
-        //     uriTemplate: "/follows",
-        //     controller: CreateFollowController::class,
-        //     denormalizationContext: ['groups' => ['follow:write']]
-        // ),
         new Post(
-            controller: CreateFollow2Controller::class,
+            controller: CreateFollowController::class,
             security: "is_granted('ROLE_ADMIN') or object.owner == user"
-            // denormalizationContext: ['groups' => ['like:write']],
-            // security: "is_granted('ROLE_USER')"
         ),
         new Delete(
             security: "is_granted('ROLE_ADMIN') or object.owner == user"
-            // denormalizationContext: ['groups' => ['like:write']],
-            // security: "is_granted('ROLE_USER')"
         ),
     ]
 )]

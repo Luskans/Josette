@@ -35,7 +35,6 @@ class CreateCommentController extends AbstractController
         $entityManager->flush();
         
         return new JsonResponse(
-            // Tu peux inclure les informations que tu juges nécessaires
             ['status' => 'Comment created!'], 
             JsonResponse::HTTP_CREATED
         );

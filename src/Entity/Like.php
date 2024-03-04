@@ -17,18 +17,15 @@ use DateTimeImmutable;
 #[ORM\Entity(repositoryClass: LikeRepository::class)]
 #[ORM\Table(name: '`like`')]
 #[ApiResource(
-    // normalizationContext: ['groups' => ['like:read']],
     operations: [
         new GetCollection(
             normalizationContext: ['groups' => ['like:read']],
         ),
         new Post(
             controller: CreateLikeController::class,
-            // denormalizationContext: ['groups' => ['like:write']],
             security: "is_granted('ROLE_ADMIN') or object.owner == user"
         ),
         new Delete(
-            // denormalizationContext: ['groups' => ['like:write']],
             security: "is_granted('ROLE_ADMIN') or object.owner == user"
         ),
     ]

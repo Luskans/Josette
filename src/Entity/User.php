@@ -5,11 +5,8 @@ namespace App\Entity;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Get;
-use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
-use ApiPlatform\Metadata\Put;
 use App\Controller\CreateUserController;
-use App\Controller\ConnectedUserController;
 use App\Controller\UpdateUserController;
 use App\Repository\UserRepository;
 use DateTimeImmutable;
@@ -24,25 +21,6 @@ use Symfony\Component\Serializer\Annotation\Groups;
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ApiResource(
     operations: [
-        // new Get(
-        //     uriTemplate: "/connected",
-        //     controller: ConnectedUserController::class,
-        //     read: false,
-        //     output: false,
-        //     openapiContext: [
-        //         'summary' => 'Gets the currently logged in user',
-        //         'security' => ['cookieAuth' => []]
-        //     ],
-        //     normalizationContext: ['groups' => ['user:read:connected']]
-        // ),
-        // new Get(
-        //     uriTemplate: "/connected",
-        //     controller: ConnectedUserController::class,
-        //     openapiContext: [
-        //         'summary' => 'Gets the currently logged in user'
-        //     ],
-        //     normalizationContext: ['groups' => ['user:read:connected']]
-        // ),
         new Get(
             normalizationContext: ['groups' => ['user:read', 'user:read:item']]
         ),

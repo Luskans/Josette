@@ -8,12 +8,12 @@ nelmio_cors:
         max_age: 3600
     paths:
         '^/api': 
-            allow_origin: ['*']
+            allow_origin: ['%env(CORS_ALLOW_ORIGIN)%']
             allow_methods: ['POST', 'PUT', 'PATCH', 'GET', 'DELETE', 'OPTIONS']
             allow_headers: ['Content-Type', 'Authorization', 'X-Custom-Auth']
             max_age: 3600
         '^/': 
-            allow_origin: ['*']
+            allow_origin: ['%env(CORS_ALLOW_ORIGIN)%']
             allow_methods: ['POST', 'PUT', 'PATCH', 'GET', 'DELETE', 'OPTIONS']
             allow_headers: ['Content-Type', 'Authorization', 'X-Custom-Auth']
             max_age: 3600

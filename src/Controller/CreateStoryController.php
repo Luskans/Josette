@@ -46,11 +46,13 @@ class CreateStoryController extends AbstractController
         }
         $story->addTheme($theme1);
 
-        $theme2 = $entityManager->getRepository(Theme::class)->find($request->request->get('theme2'));
-        if (!$theme2) {
-            throw new \Exception("Theme non trouvé pour l'id du thème 2");
+        if ($request->request->get('theme2')) {
+            $theme2 = $entityManager->getRepository(Theme::class)->find($request->request->get('theme2'));
+            if (!$theme2) {
+                throw new \Exception("Theme non trouvé pour l'id du thème 2");
+            }
+            $story->addTheme($theme2);
         }
-        $story->addTheme($theme2);
 
         $entityManager->persist($story);
         $entityManager->flush();

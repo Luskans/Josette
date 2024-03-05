@@ -9,6 +9,7 @@ use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
 use App\Controller\CreateStoryController;
 use App\Repository\StoryRepository;
@@ -35,6 +36,9 @@ use Symfony\Component\Serializer\Annotation\Groups;
         ),
         new Delete(
             security: "is_granted('ROLE_ADMIN') or object.owner == user"
+        ),
+        new Patch(
+            
         ),
     ],
     paginationItemsPerPage: 20

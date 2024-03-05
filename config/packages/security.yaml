@@ -10,55 +10,29 @@ security:
                 class: App\Entity\User
                 property: email
         # used to reload user from session & other features (e.g. switch_user)
+        
     firewalls:
-        dev:
-            pattern: ^/(_(profiler|wdt)|css|images|js)/
-            security: false
-
-        main:
+        login:
             pattern: ^/api/login
             stateless: true
-            provider: users
             json_login:
                 check_path: /api/login
-                username_path: email
-                password_path: password
                 success_handler: lexik_jwt_authentication.handler.authentication_success
                 failure_handler: lexik_jwt_authentication.handler.authentication_failure
-
-        # api:
-        #     pattern: ^/api
-        #     stateless: true
-        #     jwt: ~
-        #     refresh_jwt:
-        #         check_path: /api/token/refresh # or, you may use the `api_refresh_token` route name
 
         api:
             pattern: ^/api
             stateless: true
             entry_point: jwt
-            json_login:
-                check_path: /api/login # or, if you have defined a route for your login path, the route name you used
-                success_handler: lexik_jwt_authentication.handler.authentication_success
-                failure_handler: lexik_jwt_authentication.handler.authentication_failure
             jwt: ~
             refresh_jwt:
                 check_path: /api/token/refresh # or, you may use the `api_refresh_token` route name
 
     access_control:
-        - { path: ^/$, roles: PUBLIC_ACCESS } # Allows accessing the Swagger UI
-        - { path: ^/docs, roles: PUBLIC_ACCESS } # Allows accessing the Swagger UI docs
-        # - { path: /api/login, roles: PUBLIC_ACCESS }
+        - { path: ^/api/login, roles: PUBLIC_ACCESS }
         - { path: ^/api/(login|token/refresh), roles: PUBLIC_ACCESS } # Allows accessing login or refresh token
-        - { path: /api/signup, roles: PUBLIC_ACCESS }
-        - { path: /api/stories, roles: PUBLIC_ACCESS }
-        - { path: /api/users, roles: PUBLIC_ACCESS }
-        - { path: /api/themes, roles: PUBLIC_ACCESS }
-        - { path: /api/comments, roles: PUBLIC_ACCESS }
-        - { path: /api/likes, roles: PUBLIC_ACCESS }
-        - { path: /api/users/update, roles: PUBLIC_ACCESS }
-        # - { path: /api/themes, roles: PUBLIC_ACCESS }
-        # - { path: /api/stories/{id}, roles: PUBLIC_ACCESS }
+        - { path: ^/docs, roles: PUBLIC_ACCESS } # Allows accessing the Swagger UI docs
+        - { path: ^/api, roles: PUBLIC_ACCESS }
         # - { path: ^/api, roles: IS_AUTHENTICATED_FULLY }
 
 when@test:

@@ -20,7 +20,9 @@ class JWTCreatedListener
         $payload['createdAt'] = $user->getCreatedAt();
         $payload['isDeleted'] = $user->isIsDeleted();
         $payload['isBanned'] = $user->isIsBanned();
-        $payload['image'] = $user->getImage()->getName();
+        $image = $user->getImage();
+        $imageName = $image ? $image->getName() : null;
+        $payload['image'] = $imageName;
         
         $event->setData($payload);
     }

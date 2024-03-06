@@ -23,10 +23,10 @@ use DateTimeImmutable;
         ),
         new Post(
             controller: CreateLikeController::class,
-            security: "is_granted('ROLE_ADMIN') or object.owner == user"
+            security: "is_granted('ROLE_USER')", 
         ),
         new Delete(
-            security: "is_granted('ROLE_ADMIN') or object.owner == user"
+            security: "is_granted('ROLE_USER')", 
         ),
     ]
 )]

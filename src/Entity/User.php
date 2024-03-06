@@ -36,7 +36,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
             uriTemplate: "/users/update",
             controller: UpdateUserController::class,
             deserialize: false,
-            security: "is_granted('ROLE_ADMIN') or object.owner == user"
+            security: "is_granted('ROLE_USER')",
         ),
     ]
 )]

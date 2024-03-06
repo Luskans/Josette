@@ -32,10 +32,10 @@ use Symfony\Component\Serializer\Annotation\Groups;
         new Post(
             controller: CreateStoryController::class,
             deserialize: false, 
-            security: "is_granted('ROLE_ADMIN') or object.owner == user"
+            security: "is_granted('ROLE_USER')",
         ),
         new Delete(
-            security: "is_granted('ROLE_ADMIN') or object.owner == user"
+            security: "is_granted('ROLE_USER')",
         ),
         new Patch(
             
